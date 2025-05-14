@@ -23,13 +23,24 @@ spec:
       securityContext:
         runAsNonRoot: true
       serviceAccountName: kuberay-operator
+      dnsPolicy: "None"
+      dnsConfig:
+        nameservers:
+          - 10.96.0.10
+        searches:
+          - default.svc.cluster.local
+          - svc.cluster.local
+          - cluster.local
+        options:
+          - name: ndots
+            value: "5"
       containers:
       - command:
         - /manager
         args:
         - --feature-gates=RayClusterStatusConditions=true # this argument can be removed for version >= v1.3 where the feature gate is enabled by default.
 #        - --enable-leader-election
-        image: kuberay/operator
+        image: kuberay/operator:v1.3.0 
         imagePullPolicy: IfNotPresent
         ports:
         - name: http
